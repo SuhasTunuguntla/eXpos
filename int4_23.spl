@@ -1,0 +1,212 @@
+alias usersp R1;
+usersp=SP;
+
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=SP;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+alias suh R2;
+suh=[PTBR+2*((usersp-5)/512)]*512+((usersp-5)%512);
+alias ss R3;
+ss=[suh];
+alias mf R10;
+mf=PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9;
+alias ret R11;
+ret=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+alias uid R12;
+uid=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+3];
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=ss;
+alias d R4;
+	d=[[PTBR+2*((usersp-4)/512)]*512+((usersp-4)%512)];
+if(ss==1) then
+	//print "ssssss";
+	
+	alias j R6;
+	j=0;
+	while(j<60) do
+		if([INODE_TABLE+j*16+1]==d) then
+			
+			[ret]=0;
+			[mf]=0;
+			SP=usersp;
+			ireturn;
+		endif;
+	j=j+1;
+	endwhile;	
+	
+	
+	alias u R5;
+	u=0;
+	while(u<60) do
+		if([INODE_TABLE+u*16]==-1) then
+			break;
+		endif;
+	u=u+1;
+	endwhile;
+	
+	print "asasass";
+	print u;
+	print d;
+	if(u==60) then
+		
+			
+			[ret]=-1;
+			[mf]=0;
+			SP=usersp;
+			ireturn;
+	endif;
+	
+	
+	alias inode R15;
+	inode=INODE_TABLE+u*16;
+	[inode]=2;
+	[inode+1]=d;
+	[inode+2]=0;
+	//print "suhas";
+	alias c R8;
+	c=5;
+	while(c<16) do
+		[inode+c]=-1;
+		c=c+1;
+	endwhile;
+	print [inode+1];
+	[inode+3]=uid;
+	alias b R9;
+	b=[[PTBR+2*((usersp-3)/512)]*512+((usersp-3)%512)];
+	[inode+4]=b;
+	
+	alias ro R14;
+	ro=ROOT_FILE+u*8;
+	[ro]=d;
+	[ro+1]=0;
+	[ro+2]=2;
+	[ro+4]=b;
+	[ro+3]=[USER_TABLE+uid*2];
+	
+		[ret]=0;
+		[mf]=0;
+		SP=usersp;
+		ireturn;
+endif;
+
+if(ss==4) then
+	
+	alias x R5;
+	x=0;
+	while(x<60) do
+		if([INODE_TABLE+x*16+1]==d) then
+			break;
+		endif;
+	x=x+1;
+	endwhile;
+	//print "qqqqqq";
+	//print d;
+	//print x;
+	if(x==60) then
+		[ret]=0;
+		[mf]=0;
+		SP=usersp;
+		ireturn;
+	endif;
+	if([INODE_TABLE+x*16]!=2) then
+		[ret]=-1;
+		[mf]=0;
+		SP=usersp;
+		ireturn;
+	endif;
+		//print "suhas23";
+		//print uid;
+	if([INODE_TABLE+x*16+4]==0) then
+			if(uid!=1&&[INODE_TABLE+x*16+3]!=uid)then
+		
+		[ret]=-1;
+		[mf]=0;
+		SP=usersp;
+		ireturn;
+	endif;
+	endif;
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+	alias k R1;
+	k=4;
+	alias vv R3;
+	vv=x;
+	alias xxx R2;
+	xxx=[SYSTEM_STATUS_TABLE+1];
+	call MOD_0;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+	
+	//print "suhas1";
+	
+if([FILE_STATUS_TABLE+x*4+1]=-1)then								
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+		alias k R1;
+		k=5;
+		alias vv R3;
+		vv=x;
+		alias xxx R2;
+		xxx=[SYSTEM_STATUS_TABLE+1];
+		
+		
+		call MOD_0;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+		
+		[ret]=-2;
+		[mf]=0;
+		SP=usersp;
+		ireturn;
+endif;
+//print "suhas2";
+		
+	alias dd R9;
+	dd=INODE_TABLE+x*16+8;
+	alias cc R6;
+	cc=0;
+	while(cc<4) do
+		alias zz R14;
+		zz=0;
+		while(zz<4) do
+			if([dd+cc]==[BUFFER_TABLE+zz*4] &&[BUFFER_TABLE+zz*4+1]==1) then
+	[BUFFER_TABLE+zz*4+1]=0;
+	
+	
+	
+			endif;
+		zz=zz+1;
+		endwhile;
+		
+	cc=cc+1;
+	endwhile;
+	//print "suhas3";
+	
+	//[INODE_TABLE+x*16]=-1;
+		cc=0;
+		while(cc<16) do
+			[INODE_TABLE+x*16+cc]=-1;
+			cc=cc+1;
+		endwhile;	
+	
+	[ROOT_FILE+x*8]=-1;
+	
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+		alias kk R1;
+		kk=5;
+		alias vvv R3;
+		vvv=x;
+	alias xxxf R2;
+		xxxf=[SYSTEM_STATUS_TABLE+1];
+		call MOD_0;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+	
+		
+		[ret]=0;
+		[mf]=0;
+		SP=usersp;
+		ireturn;
+endif;		
+	
+	
+					
+	
+			
+
+	
+	
+			

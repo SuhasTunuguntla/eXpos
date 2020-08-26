@@ -1,0 +1,44 @@
+//breakpoint;
+alias currpid R0;
+currpid=[SYSTEM_STATUS_TABLE+1];
+SP=SP+1;
+[SP]=BP;
+alias current_process R1;
+current_process=PROCESS_TABLE+currpid*16;
+[current_process+12]=SP%512;
+[current_process+14]=PTBR;
+[current_process+15]=PTLR;
+alias reg R2;
+reg=currpid;
+reg=reg+1;
+reg=reg%3;
+while(reg!=currpid) do
+	//reg=reg+1;
+	//reg=reg%3;
+	current_process=PROCESS_TABLE+reg*16;
+	if([current_process+4]==CREATED) then
+	    SP=[current_process+13];
+	    [current_process+4]=RUNNING;
+	    [current_process+9]=0;
+	    PTBR=[current_process+14];
+	    PTLR=[current_process+15];
+	   // BP=[SP];
+	   BP=[[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512];
+	    //SP=SP-1;
+	    [SYSTEM_STATUS_TABLE+1]=reg;
+	    ireturn;
+	endif;
+	//breakpoint;
+	if([current_process+4]==READY)  then
+	    PTLR=[current_process+15];
+	    PTBR=[current_process+14];
+	    SP=[current_process+11]*512+[current_process+12];
+	    [SYSTEM_STATUS_TABLE+1]=reg;
+	    BP=[SP];
+	    SP=SP-1;
+	    [current_process+4]=RUNNING;
+	    return;
+	endif;
+reg=reg+1;
+reg=reg%3;	
+endwhile;

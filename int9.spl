@@ -1,0 +1,120 @@
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=SP;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE]*16+9]=9;
+alias d R0;
+alias e R1;
+breakpoint;
+e=SP;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+d=[[PTBR+2*((e-4)/512)]*512+((e-4)%512)];
+//breakpoint;
+alias s R6;
+alias index R9;
+s=0;
+//print d;
+while(s<60) do
+	if(([INODE_TABLE+16*s+1]==d)&&(([INODE_TABLE+16*s])==3)) then
+		index=s;
+		break;
+	endif;
+	s=s+1;
+endwhile;
+	//print s;
+if(s==60) then
+	alias num R0;
+	num=[PTBR+2*((e-4)/512)]*512+((e-4)%512);
+	[num]=-1;
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+	SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+	ireturn;
+endif;
+//print index;	
+	
+multipush(R0,R1,R2,R3);
+alias t R1;
+alias r R2;
+t=3;
+r=[SYSTEM_STATUS_TABLE+1];
+call MOD_1;
+multipop(R0,R1,R2,R3);
+alias c R4;
+c=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11];
+[MEMORY_FREE_LIST+c]=[MEMORY_FREE_LIST+c]+1;
+[SYSTEM_STATUS_TABLE+2]=[SYSTEM_STATUS_TABLE+2]-1;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=RUNNING;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+7]=index;
+
+breakpoint;
+//print index;
+PTBR=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+14];
+[PTBR]=63;
+[PTBR+1]="0100";
+[PTBR+2]=64;
+[PTBR+3]="0100";
+alias v R5;
+v=2;
+while(v<10) do
+multipush(R0,R1,R2,R3,R4,R5);
+alias p R1;
+p=1;
+call MOD_2;
+alias retu R0;
+//print retu;
+[PTBR+v*2]=retu;
+[PTBR+v*2+1]="0110";
+multipop(R0,R1,R2,R3,R4,R5);
+//breakpoint;
+if(v==3) then
+v=v+5;
+else
+v=v+1;
+endif;
+endwhile;
+breakpoint;
+//multipush(R0,R1,R2,R3,R4,R5);
+alias l R5;
+alias n R6;
+l=0;
+n=0;
+//print index;
+while(l<4) do
+	if([INODE_TABLE+16*index+8+l]!=-1) then
+		n=n+1;
+	endif;
+	l=l+1;
+endwhile;
+//print n;
+	breakpoint;	
+l=0;
+while(l<n) do
+	multipush(R0,R1,R2,R3,R4,R5);
+		alias fun R1;
+		fun=1;
+		call MOD_2;
+	
+	alias ret R0;
+//	print ret;
+	[PTBR+(l+4)*2]=ret;
+	[PTBR+(l+4)*2 + 1]="0110";
+	multipop(R0,R1,R2,R3,R4,R5);
+	l=l+1;
+endwhile;
+breakpoint;
+while(l<4) do
+	[PTBR+(l+4)*2]=-1;
+	[PTBR+(l+4)*2+1]="0000";
+l=l+1;
+endwhile;
+breakpoint;
+
+//print [PTBR+8];
+//print [PTBR+16];
+loadi([PTBR+8],70);
+breakpoint;
+
+[[PTBR+16]*512]=[[PTBR+8]*512+1];
+breakpoint;
+SP=8*512;
+breakpoint;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+ireturn;

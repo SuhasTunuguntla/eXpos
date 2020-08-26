@@ -1,0 +1,136 @@
+alias funnum R1;
+alias currpid R2;
+
+if(funnum==3) then
+	while([DISK_STATUS_TABLE]==1) do
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_DISK;
+		multipush(R0,R1,R2,R3,R4,R5);
+		call SCHEDULER;
+		multipop(R0,R1,R2,R3,R4,R5);
+	endwhile;
+	breakpoint;
+[DISK_STATUS_TABLE]=1;
+//breakpoint;
+[DISK_STATUS_TABLE+4]=currpid;
+return;
+endif;
+
+if(funnum==4) then
+alias k R3;
+	while([FILE_STATUS_TABLE+k*4]!=-1) do
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_FILE;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+5]=k;
+		multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8);
+		call SCHEDULER;
+		multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8);
+	endwhile;
+	
+	if([INODE_TABLE+k*16+1]==-1) then
+		alias f R0;
+		f=-1;
+		return;
+	endif;
+	[FILE_STATUS_TABLE+k*4]=[SYSTEM_STATUS_TABLE+1];
+	alias f R0;
+	f=0;
+	return;
+endif;
+
+if(funnum==5) then
+	alias k R3;
+	if(currpid!=[FILE_STATUS_TABLE+k*4]) then
+		alias f R0;
+		f=-1;
+	endif;
+	[FILE_STATUS_TABLE+k*4]=-1;
+	alias v R6;
+	v=0;
+	while(v<16) do
+		if([PROCESS_TABLE+v*16+4]==WAIT_FILE && [PROCESS_TABLE+v*16+5]==k) then
+			[PROCESS_TABLE+v*16+4]=READY;
+		endif;
+	v=v+1;
+	endwhile;
+alias f R0;
+f=0;
+return;		
+endif;						
+		
+
+if(funnum==6) then
+	alias v R3;
+	v=0;
+	while(v<32) do
+		if([SEMAPHORE_TABLE+v*4+1]==0) then
+			[SEMAPHORE_TABLE+v*4+1]=1;
+			break;
+		endif;
+	v=v+1;
+	endwhile;
+	if(v==32) then
+		alias j R0;
+		j=-1;
+		return;
+	endif;
+		
+	[SEMAPHORE_TABLE+v*4]=-1;
+	alias j R0;
+	j=v;
+	return;
+endif;			
+
+
+if(funnum==7) then
+	alias r R3;
+	if([SEMAPHORE_TABLE+r*4]==currpid) then
+		[SEMAPHORE_TABLE+r*4]=-1;
+		alias x R4;
+			x=0;
+			while(x<16) do
+				if([PROCESS_TABLE+x*16+4]==WAIT_SEMAPHORE && [PROCESS_TABLE+x*16+5]==r) then
+					[PROCESS_TABLE+x*16+4]=READY;
+				endif;
+			x=x+1;
+			endwhile;
+	endif;	
+	[SEMAPHORE_TABLE+r*4+1]=[SEMAPHORE_TABLE+r*4+1]-1;
+	return;
+endif;
+					
+
+
+
+
+if(funnum==8) then 
+	while([TERMINAL_STATUS_TABLE]==1) do
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_TERMINAL;
+		multipush(R0,R1,R2,R3,R4,R5);
+		call SCHEDULER;
+		multipop(R0,R1,R2,R3,R4,R5);
+	endwhile;
+[TERMINAL_STATUS_TABLE]=1;
+//breakpoint;
+[TERMINAL_STATUS_TABLE+1]=currpid;
+return;
+endif;
+
+
+if(funnum==9) then
+alias c R0;
+//print [TERMINAL_STATUS_TABLE+1];
+	if(currpid==[TERMINAL_STATUS_TABLE+1]) then
+		[TERMINAL_STATUS_TABLE]=0;
+		alias j R6;
+		j=0;
+		while(j<16) do
+			if([PROCESS_TABLE+j*16+4]==WAIT_TERMINAL) then
+			[PROCESS_TABLE+j*16+4]=READY;
+			endif;
+		j=j+1;
+		endwhile;
+	c=0;
+	return;
+	endif;
+c=-1;
+return;
+endif;		

@@ -1,0 +1,82 @@
+breakpoint;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=-1;
+alias usersp R5;
+usersp=SP;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=SP;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+backup;
+SP=SP+1;
+[SP]=EIP;
+print EIP;
+print EPN;
+print EC;
+if(EC!=0 || usersp>PTLR*512-1) then
+ print "ERROR";
+ multipush(R0,R1,R2,R3,R4,R5);
+ alias x R1;
+ x=3;
+ alias y R2;
+ y=[SYSTEM_STATUS_TABLE+1];
+ call MOD_1;
+ multipop(R0,R1,R2,R3,R4,R5);
+ multipush(R0,R1,R2,R3,R4,R5);
+ 
+ call SCHEDULER;
+ multipop(R0,R1,R2,R3,R4,R5);
+else
+	if(EPN>3&&EPN<=7) then
+	multipush(R0,R1,R2,R3,R4,R5);
+		alias d R1;
+		d=5;
+		alias f R3;
+		f=[DISK_MAP_TABLE+10*[SYSTEM_STATUS_TABLE+1]+EPN];
+		call MOD_2;
+		alias n R0;
+		[PAGE_TABLE_BASE+20*[SYSTEM_STATUS_TABLE+1]+EPN*2]=n;
+	multipop(R0,R1,R2,R3,R4,R5);
+		print "sssssssss";
+		
+		
+		[PAGE_TABLE_BASE+20*[SYSTEM_STATUS_TABLE+1]+EPN*2+1]="1100";
+	else
+	multipush(R0,R1,R2,R3,R4,R5);
+		alias s R1;
+		s=1;
+		alias u R2;
+		u=[SYSTEM_STATUS_TABLE+1];
+		call MOD_2;
+		alias p R0;
+	
+	print "llllllllll";
+			[PAGE_TABLE_BASE+20*[SYSTEM_STATUS_TABLE+1]+4]=p;
+		[PAGE_TABLE_BASE+20*[SYSTEM_STATUS_TABLE+1]+5]="1110";
+	multipop(R0,R1,R2,R3,R4,R5);	
+	multipush(R0,R1,R2,R3,R4,R5);
+		alias see R1;
+		see=1;
+		alias uss R2;
+		uss=[SYSTEM_STATUS_TABLE+1];
+		call MOD_2;
+		alias jji R0;
+	
+	print ",mmmmmmmmmmmmm";
+			[PAGE_TABLE_BASE+20*[SYSTEM_STATUS_TABLE+1]+6]=jji;
+		[PAGE_TABLE_BASE+20*[SYSTEM_STATUS_TABLE+1]+7]="1110";
+		multipop(R0,R1,R2,R3,R4,R5);
+	endif;
+endif;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+EIP=[SP];
+SP=SP-1;
+restore;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+SP=SP+1;
+//alias fff R4;
+//fff=SP;
+//alias e R3;
+[[PAGE_TABLE_BASE+[SYSTEM_STATUS_TABLE+1]*20+2*(SP/512)]*512+(SP%512)]=EIP;
+//[e]=EIP;
+//[SP]=EIP;
+print "xxxxxxxxxxx";
+ireturn;		
+			

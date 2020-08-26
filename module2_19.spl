@@ -1,0 +1,129 @@
+alias q R1;
+alias z R2;
+alias xx R3;
+//print xx;
+alias xxx R11;
+xxx=xx;
+//print "great";
+alias t R10;
+breakpoint;
+if(q==1) then
+	[SYSTEM_STATUS_TABLE+3]=[SYSTEM_STATUS_TABLE+3]+1;
+	while([SYSTEM_STATUS_TABLE+2]==0) do
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_MEM;
+		multipush(R0,R1,R2,R3,R4,R5);
+		call MOD_5;
+		multipop(R0,R1,R2,R3,R4,R5);
+		
+	endwhile;
+	[SYSTEM_STATUS_TABLE+3]=[SYSTEM_STATUS_TABLE+3]-1;
+	[SYSTEM_STATUS_TABLE+2]=[SYSTEM_STATUS_TABLE+2]-1;
+	alias j R8;
+	j=0;
+	while(1) do
+		if([MEMORY_FREE_LIST+j]==0) then
+			[MEMORY_FREE_LIST+j]=1;
+			break;
+		endif;	
+	j=j+1;	
+	endwhile;
+	print j;
+	print "sssssssssssssss";
+	alias x R0;
+	x=j;
+	return;
+endif;
+if(q==2) then
+	print "yyyyyyyyyyyy";
+	print z;
+	print [MEMORY_FREE_LIST+z];
+	[MEMORY_FREE_LIST+z]=[MEMORY_FREE_LIST+z]-1;
+	print [MEMORY_FREE_LIST+z];
+	breakpoint;
+	if([MEMORY_FREE_LIST+z]==0) then
+		[SYSTEM_STATUS_TABLE+2]=[SYSTEM_STATUS_TABLE+2]+1;
+	endif;
+	alias c R7;
+	c=0;
+	breakpoint;
+	while(c<16) do
+		if([PROCESS_TABLE+c*16+4]==WAIT_MEM) then
+		[PROCESS_TABLE+c*16+4]=READY;
+		endif;
+	c=c+1;	
+	endwhile;
+	return;
+endif;
+
+
+
+if(q==4) then
+//alias x R3;
+[DISK_FREE_LIST+xx]=[DISK_FREE_LIST+xx]-1;
+return;
+endif;
+
+
+
+
+
+if(q==5) then
+	alias j R5;
+	j=0;
+	print "suhas";
+	while(j<16) do
+		alias d R4;
+		d=0;
+		while(d<10) do
+			if([DISK_MAP_TABLE+10*j+d]==xx) then
+				if([PAGE_TABLE_BASE+20*j+2*d+1]==0100||[PAGE_TABLE_BASE+20*d+2*d+1]==0110) then
+				alias g R0;
+				g=[PAGE_TABLE_BASE+20*j+2*d];
+				[MEMORY_FREE_LIST+g]=[MEMORY_FREE_LIST+g]+1;
+				breakpoint;
+				return;
+				endif;
+				print "lie gone wild";
+			endif;
+			d=d+1;
+		endwhile;
+		j=j+1;
+	endwhile;
+					
+multipush(R1,R2,R3,R4,R5);
+alias k R1;
+k=1;
+call MOD_2;
+alias e R0;
+t=e;
+//[PTBR+8]=e;
+multipop(R1,R2,R3,R4,R5);
+//alias suh R3;
+multipush(R0,R1,R2,R3,R4,R5,R7,R10);
+alias ee R1;
+ee=2;
+alias rr R2;
+rr=z;
+alias dd R3;
+dd=e;
+print e;
+alias ff R4;
+print xxx;
+print "suhas is";
+ff=xxx;
+call MOD_4;
+multipop(R0,R1,R2,R3,R4,R5,R7,R10);
+alias retval R0;
+alias ret R10;
+retval = ret;
+print retval;
+
+
+return;
+endif;
+
+	
+	
+
+
+							

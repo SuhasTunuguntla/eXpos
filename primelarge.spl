@@ -1,0 +1,20 @@
+alias counter R0;
+alias suhas R1;
+alias bhar R2;
+counter=20;
+while(counter>=1) do
+ suhas=2;
+ bhar=counter/2;
+ while(suhas<bhar) do
+  if(counter%suhas==0) then
+  break;
+  endif;
+  suhas=suhas+1;
+ endwhile;
+ if(suhas==bhar) then
+  print counter;
+  break;
+ endif;
+ counter=counter-1;
+endwhile;  
+   

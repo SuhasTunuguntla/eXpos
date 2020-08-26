@@ -1,0 +1,9 @@
+alias suhas R0;
+alias su R1;
+suhas=1;
+su=0;
+while(suhas<=20) do
+ su=su+suhas*suhas;
+ suhas=suhas+1;
+endwhile; 
+print su;

@@ -1,0 +1,104 @@
+alias usersp R1;
+usersp=SP;
+
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=SP;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+alias suh R2;
+suh=[PTBR+2*((usersp-5)/512)]*512+((usersp-5)%512);
+alias ss R3;
+ss=[suh];
+//print ss;
+//print "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+//print "suhas";
+
+if(ss==19) then
+	//print "suhas";
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=19;
+	alias o R6;
+	o=[[PTBR+2*((usersp-4)/512)]*512+((usersp-4)%512)];
+	
+	alias f R5;
+	f=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11];
+	
+	
+	//print o;
+	//print [f*512+496+o*2];
+	if((o<0||o>=8) || [f*512+496+o*2]!=1) then
+		alias d R8;
+		d=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		//print "ttt";
+		[d]=-1;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+	endif;	
+	//breakpoint;
+	breakpoint;
+	//print "dd";
+		
+	while([SEMAPHORE_TABLE+[f*512+496+o*2+1]*4]!=-1) do
+	
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_SEMAPHORE;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+5]=[f*512+496+o*2+1];
+		
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14);
+	call SCHEDULER;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14);
+	endwhile;
+
+	[SEMAPHORE_TABLE+[f*512+496+o*2+1]*4]=[SYSTEM_STATUS_TABLE+1];
+	breakpoint;
+endif;
+
+
+if(ss==20) then
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=20;
+	alias o R6;
+	o=[[PTBR+2*((usersp-4)/512)]*512+((usersp-4)%512)];
+	
+	alias f R5;
+	f=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11];
+	
+	if((o<0||o>=8) || [f*512+496+o*2]!=1) then
+		alias d R8;
+		d=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[d]=-1;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+	endif;	
+	breakpoint;
+	//print "ee";
+	alias gh R12;
+	gh=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512+496;
+	if([SEMAPHORE_TABLE+[gh+o*2 + 1]*4]!=-1) then
+		if([SEMAPHORE_TABLE+[gh+o*2+1]*4]!=[SYSTEM_STATUS_TABLE+1]) then
+			alias d R8;
+			d=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+			[d]=-2;
+			[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+			SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+			ireturn;
+		endif;	
+		
+		[SEMAPHORE_TABLE+[gh+o*2 + 1]*4]=-1;
+		
+		
+		alias e R10;
+		e=0;
+		while(e<16) do
+			if([PROCESS_TABLE+e*16+4]==WAIT_SEMAPHORE && [PROCESS_TABLE+e*16+5]==[f*512+496+o*2+1]) then
+			[PROCESS_TABLE+e*16+4]=READY;
+			endif;
+		e=e+1;
+		endwhile;
+	endif;
+endif;	
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+		alias d R8;
+			d=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+			[d]=0;
+			[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+			SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+			ireturn;
+	

@@ -1,0 +1,67 @@
+alias usersp R1;
+usersp=SP;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=SP;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+alias suh R2;
+suh=[PTBR+2*((usersp-5)/512)]*512+((usersp-5)%512);
+alias ss R3;
+ss=[suh];
+alias d R5;
+if(ss==13) then
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=13;
+	alias o R4;
+	o=[[PTBR+2*((usersp-4)/512)]*512+((usersp-4)%512)];
+	if(o==[SYSTEM_STATUS_TABLE+1] || [PROCESS_TABLE+o*16+4]==TERMINATED || o>16) then
+		
+		d=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[d]=-1;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+	endif;
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_PROCESS;
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+5]=o;
+	call SCHEDULER;
+	
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+	
+		d=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[d]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;	
+endif;
+
+if(ss==14) then
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=14;
+	alias i R4;
+	i=0;
+	while(i<16) do
+		if([PROCESS_TABLE+i*16+4]==WAIT_PROCESS && [PROCESS_TABLE+i*16+5]==[SYSTEM_STATUS_TABLE+1]) then
+			[PROCESS_TABLE+i*16+4]=READY;
+		endif;
+		i=i+1;
+	endwhile;
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+	d=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[d]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;	
+endif;	
+
+if(ss==11) then
+	alias i R4;
+	i=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[i]=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+1];
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+endif;
+
+if(ss==12) then	
+	alias i R4;
+	i=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[i]=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+2];
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;			
+endif;
+	
+		

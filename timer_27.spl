@@ -1,0 +1,81 @@
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+13]=SP;
+SP=[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+11]*512-1;
+backup;
+
+
+if([SYSTEM_STATUS_TABLE+5]!=0)then
+		if( [SYSTEM_STATUS_TABLE+1]==15 && [SYSTEM_STATUS_TABLE+5]==SWAP_OUT)then
+			multipush(R1,R2,R3,R4);
+			alias functionnum R1;
+			functionnum=1;
+			
+			call MOD_6;
+			multipop(R1,R2,R3,R4);
+		endif;
+		if([SYSTEM_STATUS_TABLE+1]==15 && [SYSTEM_STATUS_TABLE+5]==SWAP_IN)then
+			multipush(R1,R2,R3,R4);
+			alias functionnum R1;
+			functionnum=2;
+			call MOD_6;
+			multipop(R1,R2,R3,R4);
+		endif;
+		
+		
+else
+if([SYSTEM_STATUS_TABLE+5]==0)then
+	
+	if([SYSTEM_STATUS_TABLE+2]<MEM_LOW)then
+		[SYSTEM_STATUS_TABLE+5]=SWAP_OUT;
+	else
+	if([SYSTEM_STATUS_TABLE+4]!=0)then
+	
+		alias pid R1;
+		pid=3;
+		while(pid!=15)do
+			if([PROCESS_TABLE+pid*16+6]==1)then
+
+				if([PROCESS_TABLE+pid*16+4]==READY)then
+				if([PROCESS_TABLE+pid*16]>MAX_TICK || [SYSTEM_STATUS_TABLE+2] > MEM_HIGH)then
+					[SYSTEM_STATUS_TABLE+5]=SWAP_IN;
+				break;
+				endif;	
+				endif;
+			
+			endif;
+		pid=pid+1;
+		endwhile;
+	endif;
+	endif;
+endif;
+endif;
+
+
+
+
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=READY;
+
+//alias reg R0;
+//reg=0;
+//while(reg<3) do
+	//[PROCESS_TABLE+reg*16]=[PROCESS_TABLE+reg*16]+1;
+	//reg=reg+1;
+//endwhile;
+//breakpoint;
+
+alias count R2;
+count=0;
+while(count<16)do
+	if([PROCESS_TABLE+count*16+4]!=TERMINATED) then
+[PROCESS_TABLE+count*16]=[PROCESS_TABLE+count*16]+1;
+	endif;
+count=count+1;
+endwhile;
+
+
+call SCHEDULER;
+restore;
+//breakpoint;
+SP=[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+13];
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+//breakpoint;
+ireturn;

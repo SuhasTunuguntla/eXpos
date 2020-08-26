@@ -1,0 +1,148 @@
+alias d R1;
+alias f R2;
+breakpoint;
+
+if(d==1) then
+	alias l R5;
+	l=0;
+	while(l<16) do
+		if([PROCESS_TABLE+l*16+4]==TERMINATED) then
+			break;
+		endif;
+		l=l+1;
+	endwhile;
+	
+	if(l==16) then
+		alias c R0;
+		c=-1;
+		return;
+	endif;
+	[PROCESS_TABLE+l*16+4]=ALLOCATED;
+	[PROCESS_TABLE+l*16+1]=l;
+	[PROCESS_TABLE+l*16+14]=PAGE_TABLE_BASE+20*l;
+	[PROCESS_TABLE+l*16+15]=10;
+	
+	alias x R0;
+	x=l;
+	return;
+endif;				
+
+
+
+
+
+
+
+if(d==2) then
+
+	alias cc R4;
+	cc=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512+496;
+	alias xx R5;
+	xx=0;
+	while(xx<16) do
+	
+		if([cc+xx]==1) then
+		print "ssssssssss";
+			multipush(R0,R1,R2,R3,R4,R5);
+				alias zz R1;
+				zz=7;
+				alias m R3;
+				m=[cc+xx+1];
+				call MOD_0;
+			multipop(R0,R1,R2,R3,R4,R5);
+		endif;
+	xx=xx+2;
+	endwhile;
+				
+			
+	multipush(R0,R1,R2,R3,R4);
+	alias u R2;
+	u=[PROCESS_TABLE+f*16+11];
+	alias w R1;
+	w=2;
+	breakpoint;
+	call MOD_2;
+	multipop(R0,R1,R2,R3,R4);
+	return;
+endif;
+if(d==3) then
+
+
+	if([PROCESS_TABLE+f*16+9]!=9) then
+		alias v R15;
+		v=0;
+		while(v<16) do
+			if([PROCESS_TABLE+v*16+4]==WAIT_PROCESS && [PROCESS_TABLE+v*16+5]==f) then
+				[PROCESS_TABLE+v*16+4]=READY;
+			endif;
+			
+			if([PROCESS_TABLE+v*16+2]==f) then
+				[PROCESS_TABLE+v*16+2]=-1;
+			endif;	
+		v=v+1;
+		endwhile;
+	endif;		
+	multipush(R0,R1,R2,R3,R4,R5);
+	alias o R1;
+	o=4;
+	call MOD_1;
+	multipop(R0,R1,R2,R3,R4,R5);
+	multipush(R0,R1,R2,R3,R4,R5);
+	alias t R1;
+	t=2;
+	call MOD_1;
+	multipop(R0,R1,R2,R3,R4,R5);
+	[PROCESS_TABLE+f*16+4]=TERMINATED;
+	return;
+endif;
+if(d==4) then
+	PTBR=[PROCESS_TABLE+f*16+14];
+	[PTBR+0]=-1;
+	[PTBR+1]="0000";
+	[PTBR+2]=-1;
+	[PTBR+3]="0000";
+	alias s R3;
+	s=0;
+
+	while(s<20) do
+	if([PTBR+s]!=-1) then
+		multipush(R0,R1,R2,R3,R4,R5);
+		alias v R2;
+		v=[PTBR+s];
+		alias w R1;
+		w=2;
+		call MOD_2;
+		[PTBR+s]=-1;
+		[PTBR+s+1]="0000";
+		multipop(R0,R1,R2,R3,R4,R5);
+	endif;
+	s=s+2;
+	endwhile;
+	
+	s=2;
+	while(s<10) do
+		if([DISK_MAP_TABLE+[SYSTEM_STATUS_TABLE+1]*10+s]!=-1) then
+		multipush(R0,R1,R2,R3,R4,R5);
+		alias kk R1;
+		kk=4;
+		alias xx R2;
+		xx=f;
+		alias yy R3;
+		yy=[DISK_MAP_TABLE+[SYSTEM_STATUS_TABLE+1]*10+s];
+		call MOD_2;
+		multipop(R0,R1,R2,R3,R4,R5);
+		[DISK_MAP_TABLE+[SYSTEM_STATUS_TABLE+1]*10+s]=-1;
+		
+		endif;
+	if(s==3) then
+	s=s+5;
+	else
+	s=s+1;
+	endif;
+	endwhile;	
+	return;
+endif;
+	
+			
+		
+	 

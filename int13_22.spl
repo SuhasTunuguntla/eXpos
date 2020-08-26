@@ -1,0 +1,105 @@
+alias usersp R1;
+usersp=SP;
+
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=SP;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+alias suh R2;
+suh=[PTBR+2*((usersp-5)/512)]*512+((usersp-5)%512);
+alias ss R3;
+ss=[suh];
+
+if(ss==17) then
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=17;
+	alias f R5;
+	f=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11];
+	alias d R6;
+	d=f*512+496;
+	while(d<f*512+512) do
+		if([d]==-1) then
+			break;
+		endif;	
+	d=d+2;
+	endwhile;
+	
+	if(d==f*512+512) then
+	alias y R7;
+		y=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[y]=-1;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+	endif;	
+	[d]=1;
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R14,R15);
+	alias c R1;
+	c=6;
+	alias u R2;
+	u=[SYSTEM_STATUS_TABLE+1];
+	call MOD_0;
+	alias x R0;
+	alias n R13;
+	n=x;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R14,R15);
+	
+	if(n==-1) then
+	alias y R7;
+		y=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[y]=-2;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+	endif;	
+	
+	[d+1]=n;
+	alias m R9;
+	m=(d-(f*512+496))/2;
+	print "dddddddddfff";
+	print m;
+	alias y R7;
+		y=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[y]=m;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+endif;
+
+if(ss==18) then
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=18;
+	alias h R6;
+	h=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11];
+	alias o R5;
+	o=[[PTBR+2*((usersp-4)/512)]*512+((usersp-4)%512)];
+	if((o>7) ||o<0 ||  [h*512+496+o*2]==-1) then
+		alias y R7;
+		y=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[y]=-1;
+		[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+	endif;
+	
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+	alias c R1;
+	c=7;
+	alias c1 R2;
+	c1=[SYSTEM_STATUS_TABLE+1];
+	alias e R3;
+	e=[h*512+496+o*2+1];
+	call MOD_0;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+	
+	[h*512+496+o*2]=-1;
+	
+		alias y R7;
+		y=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		[y]=0;
+		
+		
+		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+		ireturn;
+endif;
+			
+	
+	
+		
+

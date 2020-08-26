@@ -1,0 +1,126 @@
+//breakpoint;
+alias funnum R1;
+alias currentpid R2;
+alias g R3;
+alias y R4;
+
+if(funnum==1) then
+	multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11);
+	alias d R1;
+	d=3;
+	alias e R2;
+	R2=currentpid;
+	call MOD_0;
+	multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11);
+	
+	[DISK_STATUS_TABLE+1]=1;
+	[DISK_STATUS_TABLE+2]=g;
+	[DISK_STATUS_TABLE+3]=y;
+	[DISK_STATUS_TABLE+4]=[SYSTEM_STATUS_TABLE+1];
+	print "great aya";
+	print g;
+	print y;
+	store(g,y);
+	
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_DISK;
+	
+	multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11);
+	call SCHEDULER;
+	multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11);
+	return;
+endif;
+	
+
+
+
+
+if(funnum==2) then
+	multipush(R0,R1,R2,R3,R4,R5);
+	alias i R1;
+	i=3;
+	alias d R2;
+	breakpoint;
+	d=[SYSTEM_STATUS_TABLE+1];
+	call MOD_0;
+	multipop(R0,R1,R2,R3,R4,R5);
+	print "dd";
+	[DISK_STATUS_TABLE+1]=0;
+	
+	[DISK_STATUS_TABLE+2]=g;
+	print "cccccccccccccc";
+	[DISK_STATUS_TABLE+3]=y;
+	//print y;
+	//print y;
+	//print y;
+	print y;
+	print g;
+	print "eeeeeeeeeee";
+	[DISK_STATUS_TABLE+4]=[SYSTEM_STATUS_TABLE+1];
+	load(g,y);
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_DISK;
+	breakpoint;
+	multipush(R0,R1,R2,R3,R4,R5);
+	call SCHEDULER;
+	multipop(R0,R1,R2,R3,R4,R5);
+	breakpoint;
+	return;
+endif;	
+	
+	
+if(funnum==3) then
+	multipush(R0,R1,R2,R3,R4,R5);
+	alias e R1;
+	e=8;
+	alias f R2;
+	f=[SYSTEM_STATUS_TABLE+1];
+	call MOD_0;
+	multipop(R0,R1,R2,R3,R4,R5);
+	alias s R3;
+	print s;
+	multipush(R0,R1,R2,R3,R4,R5);
+	alias su R1;
+	su=9;
+	alias sud R2;
+	sud=currentpid;
+	call MOD_0;
+	alias d R0;
+	multipop(R0,R1,R2,R3,R4,R5);
+	return;
+endif;
+if(funnum==4) then
+	multipush(R0,R1,R2,R3);
+	alias sup R1;
+	sup=8;
+	alias so R2;
+	so=[SYSTEM_STATUS_TABLE+1];
+	//breakpoint;
+	call MOD_0;
+	
+	multipop(R0,R1,R2,R3);
+	//breakpoint;
+	read;
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=WAIT_TERMINAL;
+	multipush(R0,R1,R2,R3);
+	//breakpoint;
+	call SCHEDULER;
+	multipop(R0,R1,R2,R3);
+	alias to R3;
+	alias df R4;
+	//breakpoint;
+	//PTBR=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+14];
+	df=[PTBR+2*(to/512)]*512+(to%512);
+	//print PTBR;
+	//print to;
+	//print df;
+	//breakpoint;
+	
+	//while([PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+8]==0) do
+	//continue;
+	//endwhile;
+	[df]=[PROCESS_TABLE+currentpid*16+8];
+	//breakpoint;
+	//print [df];
+	return;
+endif;	
+	
+return;	

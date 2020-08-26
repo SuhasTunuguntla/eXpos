@@ -1,0 +1,220 @@
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=SP;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE]*16+9]=9;
+alias d R0;
+alias e R1;
+breakpoint;
+e=SP;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+PTBR=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+14];
+d=[[PTBR+2*((e-4)/512)]*512+((e-4)%512)];
+//breakpoint;
+alias s R6;
+alias index R9;
+s=0;
+//print d;
+while(s<60) do
+	if(([INODE_TABLE+16*s+1]==d)&&(([INODE_TABLE+16*s])==3)) then
+		index=s;
+		break;
+	endif;
+	s=s+1;
+endwhile;
+	//print s;
+if(s==60) then
+	alias num R0;
+	num=[PTBR+2*((e-4)/512)]*512+((e-4)%512);
+	[num]=-1;
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+	SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+	ireturn;
+endif;
+print index;	
+print "suhas is great";	
+multipush(R0,R1,R2,R3,R9);
+alias t R1;
+alias r R2;
+t=3;
+r=[SYSTEM_STATUS_TABLE+1];
+call MOD_1;
+multipop(R0,R1,R2,R3,R9);
+alias c R4;
+c=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11];
+[MEMORY_FREE_LIST+c]=[MEMORY_FREE_LIST+c]+1;
+[SYSTEM_STATUS_TABLE+2]=[SYSTEM_STATUS_TABLE+2]-1;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4]=RUNNING;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+7]=index;
+
+breakpoint;
+//print index;
+PTBR=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+14];
+[PTBR]=63;
+[PTBR+1]="0100";
+[PTBR+2]=64;
+[PTBR+3]="0100";
+alias v R5;
+v=8;
+
+
+
+while(v<10) do
+multipush(R0,R1,R2,R3,R4,R5,R9);
+alias p R1;
+p=1;
+call MOD_2;
+alias retu R0;
+print "uuuuuuu";
+print retu;
+[PTBR+v*2]=retu;
+[PTBR+v*2+1]="0110";
+multipop(R0,R1,R2,R3,R4,R5,R9);
+//breakpoint;
+v=v+1;
+endwhile;
+
+v=2;
+breakpoint;
+while(v<4) do
+//multipush(R0,R1,R2,R3,R4,R5);
+//alias p R1;
+//p=1;
+//call MOD_2;
+//alias retu R0;
+//print retu;
+[PTBR+v*2]=-1;
+[PTBR+v*2+1]="0000";
+//multipop(R0,R1,R2,R3,R4,R5);
+//breakpoint;
+v=v+1;
+endwhile;
+
+
+multipush(R0,R1,R2,R3,R4,R5,R9);
+alias dd R1;
+dd=5;
+alias uu R2;
+uu=[SYSTEM_STATUS_TABLE+1];
+alias ss R3;
+ss=[INODE_TABLE+16*index+8];
+print ss;
+print "suhas";
+call MOD_2;
+alias rr R0;
+[PTBR+8]=rr;
+[PTBR+9]="0110";
+
+
+print [PTBR+8];
+
+multipop(R0,R1,R2,R3,R4,R5,R9);
+
+
+breakpoint;
+//multipush(R0,R1,R2,R3,R4,R5);
+alias l R5;
+alias n R6;
+l=0;
+n=0;
+print index;
+print "asdddddddddd";
+while(l<4) do
+	if([INODE_TABLE+16*index+8+l]!=-1) then
+		[DISK_MAP_TABLE+10*[SYSTEM_STATUS_TABLE+1]+4+l]=[INODE_TABLE+16*index+8+l];
+		n=n+1;
+	endif;
+	l=l+1;
+endwhile;
+//print n;
+	//breakpoint;
+	
+l=n;
+while(l<4) do
+	[DISK_MAP_TABLE+10*[SYSTEM_STATUS_TABLE+1]+4+l]=-1;
+	l=l+1;
+endwhile;	
+	
+l=0;
+while(l<4) do
+[DISK_MAP_TABLE+10*[SYSTEM_STATUS_TABLE+1]+l]=-1;
+l=l+1;
+endwhile;
+breakpoint;
+l=8;	
+while(l<10) do
+[DISK_MAP_TABLE+10*[SYSTEM_STATUS_TABLE+1]+l]=-1;
+l=l+1;
+endwhile;
+
+
+
+
+
+
+
+
+	
+//l=0;
+//while(l<n) do
+//	multipush(R0,R1,R2,R3,R4,R5);
+//		alias fun R1;
+//		fun=1;
+//		call MOD_2;
+	
+//	alias ret R0;
+//	print ret;
+//	[PTBR+(l+4)*2]=ret;
+//	[PTBR+(l+4)*2 + 1]="0110";
+//	multipop(R0,R1,R2,R3,R4,R5);
+//	l=l+1;
+//endwhile;
+//breakpoint;
+//while(l<4) do
+//	[PTBR+(l+4)*2]=-1;
+//	[PTBR+(l+4)*2+1]="0000";
+//l=l+1;
+//endwhile;
+//breakpoint;
+
+//print [PTBR+8];
+//print [PTBR+16];
+//loadi([PTBR+8],70);
+//multipush(R0,R1,R2,R3,R4,R5,R6,R7);
+//alias u R1;
+//u=2;
+//alias p R2;
+//p=[SYSTEM_STATUS_TABLE+1];
+//alias x R3;
+//x=[PTBR+8];
+//alias cu R4;
+//cu=70;
+//call MOD_4;
+//multipop(R0,R1,R2,R3,R4,R5,R6,R7);
+
+breakpoint;
+//PTBR=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+14];
+PTBR=PAGE_TABLE_BASE+ 20*[SYSTEM_STATUS_TABLE+1];
+
+alias v R9;
+v=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512+496;
+alias d R11;
+d=0;
+while(d<16) do
+	[v+d]=-1;
+	[v+d+1]=-1;
+d=d+2;
+endwhile;	
+
+
+
+
+print "asdfffffffffff";
+print [PTBR+16];
+print [PTBR+8];
+print [[PTBR+8]*512+1];
+[[PTBR+16]*512]=[[PTBR+8]*512+1];
+breakpoint;
+SP=8*512;
+breakpoint;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+print "suhaaa";
+ireturn;

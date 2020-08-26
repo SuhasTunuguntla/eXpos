@@ -1,0 +1,161 @@
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=7;
+alias usersp R15;
+usersp=SP;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=SP;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+alias filedp R1;
+alias suhas R2;
+suhas=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+		
+alias word R14;
+filedp=([PTBR+2*(usersp-4)/512])*512+((usersp-4)%512);
+print "trtrtrtrt";
+//print [filedp];
+if([filedp]==-1) then
+	//print usersp-3;
+	word=[[PTBR+2*((usersp-3)/512)]*512+((usersp-3)%512)];
+	//print PTBR;
+	//print word;
+	//word=usersp-3;
+	multipush(R0,R1,R2,R3,R4,R15);
+	alias a R1;
+	a=4;
+	//breakpoint;
+	//breakpoint;
+	
+	alias b R2;
+	b=[SYSTEM_STATUS_TABLE+1];
+	alias c R3;
+	c=word;
+	call MOD_4;
+	multipop(R0,R1,R2,R3,R4,R15);
+	suhas=[PTBR+2*((usersp-1)/512)]*512+((usersp-1)%512);
+	[suhas]=0;
+
+
+else
+	if([filedp]<0 || [filedp]>7) then
+		[suhas]=-1;
+	else
+	alias c R4;
+	c=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512+496;
+	print "sardddd";
+	//print [filedp];
+		if([c+[filedp]*2]!=0) then
+			[suhas]=-1;
+			[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+			SP=usersp;
+			ireturn;	
+		endif;
+		alias g R5;
+		alias h R10;
+		g=[c+[filedp]*2+1];
+		h=[OPEN_FILE_TABLE+g*4];
+		print g;
+		//print h;
+		
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+		alias k R1;
+		k=4;
+		alias vv R3;
+		vv=h;
+		alias xxx R2;
+		xxx=[SYSTEM_STATUS_TABLE+1];
+		call MOD_0;
+		alias p R0;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+	//print "inkkk";
+	print p;
+		if(p==-1) then
+			[suhas]=-1;
+			[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+			SP=usersp;
+			ireturn;
+		endif;
+		alias lsk R7;
+		lsk=OPEN_FILE_TABLE+g*4+2;
+		word=[[PTBR+2*((usersp-3)/512)]*512+((usersp-3)%512)];
+		alias gg R8;
+		gg=[PTBR+2*(word/512)]*512+(word%512);
+		//print "word";
+		//print word;
+		if(h==INODE_ROOT) then
+			if([lsk]==480) then
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+		alias kk R1;
+		kk=5;
+		alias vvv R3;
+		vvv=0;
+		alias xxxf R2;
+		xxxf=[SYSTEM_STATUS_TABLE+1];
+		call MOD_0;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+				[suhas]=-2;
+			[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+				SP=usersp;
+				ireturn;
+			endif;
+		[gg]=[ROOT_FILE+[lsk]];
+		
+		[lsk]=[lsk]+1;
+		else
+		//print "timon";
+		print [lsk];
+		print [INODE_TABLE+h*16+2];
+			if([lsk]==[INODE_TABLE+h*16+2]) then
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+		alias kk R1;
+		kk=5;
+		alias vvv R3;
+		vvv=h;
+		alias xxxf R2;
+		xxxf=[SYSTEM_STATUS_TABLE+1];
+		call MOD_0;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+	print "sdsdsd";
+			[suhas]=-2;
+			[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+				SP=usersp;
+			ireturn;
+			endif;
+			
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+		alias kk R4;
+		kk=2;
+		alias vvv R6;
+		vvv=[lsk]%512;
+		alias d R7;
+		d=gg;
+		alias xxxf R5;
+		xxxf=[INODE_TABLE+16*h+8+([lsk]/512)];
+		print "kkkk";
+		print xxxf;
+		call MOD_3;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+				
+		[lsk]=[lsk]+1;
+		print "pandiii";
+			
+	multipush(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+		alias kk1 R1;
+		kk1=5;
+		alias vvv1 R3;
+		vvv1=h;
+		alias xxxf1 R2;
+		xxxf1=[SYSTEM_STATUS_TABLE+1];
+		call MOD_0;
+	multipop(R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15);
+	//print [gg];
+		
+	endif;	
+	endif;
+		
+
+endif;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+SP=usersp;
+ireturn;
+
+
+		
+
